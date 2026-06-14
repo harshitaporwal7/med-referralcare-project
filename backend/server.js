@@ -6,9 +6,25 @@ const app = express();
 
 // ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173', 'https://med-referralcare-project.vercel.app'],
+  origin: (origin, callback) => {
+    if (
+      !origin ||
+      origin.includes('vercel.app') ||
+      origin === 'http://localhost:5173'
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
+
+
+// app.use(cors({
+//   origin: ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173', 'https://med-referralcare-project.vercel.app'],
+//   credentials: true,
+// }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
